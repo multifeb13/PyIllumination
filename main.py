@@ -1,6 +1,7 @@
 #This code runs on Raspberry Pi Pico via MicroPython
 import machine
 import time
+from machine import Timer
 
 signal = {
     'ROW_ENABLE': 0, 'ROW_DISABLE': 1,
@@ -51,6 +52,13 @@ class View(Element):
         super().__init__(rows)
 
 
+field = Field(world)
+
+
+def animation(timer):
+    field.move()
+
+
 def setup():
     for i in range(len(rowpin)):
         rowpins.append(machine.Pin(rowpin[i], machine.Pin.OUT))
@@ -60,20 +68,14 @@ def setup():
         colpins.append(machine.Pin(colpin[i], machine.Pin.OUT))
         colpins[i].value(signal['COL_DISABLE'])
 
+    tim = Timer()
+    tim.init(freq = 1, mode = Timer.PERIODIC, callback = animation)
+
 
 def loop():
-    field = Field(world)
     view = View(len(rowpin))
 
-    currTime = time.time()
-    prevTime = currTime
-
     while True:
-        currTime = time.time()
-        if currTime - prevTime >= 1:
-            field.move()
-            prevTime = currTime
-
         rowpins[view.pos].value(signal['ROW_DISABLE'])
         map = field.map(view)
         for c in range(len(colpins)):
