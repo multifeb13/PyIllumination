@@ -8,8 +8,8 @@ signal = {
     'COL_ENABLE': 1, 'COL_DISABLE': 0
 }
 
-rowpin  = (11, 10,  9,  8,  7,  6)
-colpin  = ( 0,  1,  2,  3,  4,  5)
+rowpin  = ( 4,  3,  2,  6,  7,  8)
+colpin  = (15, 13,  9,  5,  1,  0)
 
 rowpins = []
 colpins = []
