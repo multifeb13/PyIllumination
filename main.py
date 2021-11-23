@@ -2,6 +2,7 @@
 import machine
 import time
 from machine import Timer
+import urandom
 
 signal = {
     'ROW_ENABLE': 0, 'ROW_DISABLE': 1,
@@ -50,6 +51,15 @@ class Field(Element):
 class View(Element):
     def __init__(self, rows):
         super().__init__(rows)
+        self.move_delay = []
+        for i in range(self.rows):
+            self.move_delay.append(urandom.randint(1, 4))
+
+    def delay(self, index):
+        if index > self.rows:
+            return 1 / 1000
+        else:
+            return self.move_delay[index] / 1000
 
 
 field = Field(world)
@@ -81,7 +91,7 @@ def loop():
         for c in range(len(colpins)):
             colpins[c].value(map[c])
         rowpins[view.pos].value(signal['ROW_ENABLE'])
-        time.sleep(1/1000)
+        time.sleep(view.delay(view.pos))
         rowpins[view.pos].value(signal['ROW_DISABLE'])
 
         view.move()
