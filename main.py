@@ -62,10 +62,27 @@ class View(Element):
             return self.move_delay[index] / 1000
 
 
+class LightSensor():
+    def __init__(self, adc_pin, th):
+        self.adc = machine.ADC(adc_pin)
+        self.th = th
+        self.enable = True
+
+    def check(self):
+        if self.adc.read_u16() > self.th:
+            self.enable = True
+        else:
+            self.enable = False
+
+
 field = Field(world)
+LIGHT_SENSOR_ADC_PIN = 0
+LIGHT_SENSOR_TH = 20000 # this value was obtained by experiment.
+lightSensor = LightSensor(LIGHT_SENSOR_ADC_PIN, LIGHT_SENSOR_TH)
 
 
 def animation(timer):
+    lightSensor.check()
     field.move()
 
 
@@ -87,12 +104,13 @@ def loop():
 
     while True:
         rowpins[view.pos].value(signal['ROW_DISABLE'])
-        map = field.map(view)
-        for c in range(len(colpins)):
-            colpins[c].value(map[c])
-        rowpins[view.pos].value(signal['ROW_ENABLE'])
-        time.sleep(view.delay(view.pos))
-        rowpins[view.pos].value(signal['ROW_DISABLE'])
+        if lightSensor.enable == False:
+            map = field.map(view)
+            for c in range(len(colpins)):
+                colpins[c].value(map[c])
+            rowpins[view.pos].value(signal['ROW_ENABLE'])
+            time.sleep(view.delay(view.pos))
+            rowpins[view.pos].value(signal['ROW_DISABLE'])
 
         view.move()
 
