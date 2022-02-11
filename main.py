@@ -9,8 +9,8 @@ signal = {
     'COL_ENABLE': 1, 'COL_DISABLE': 0
 }
 
-rowpin  = (11, 10,  9,  8,  7,  6)
-colpin  = ( 0,  1,  2,  3,  4,  5)
+rowpin  = ( 8,  7,  5,  4,  3,  1)
+colpin  = ( 9,  2,  0, 17, 27, 18)
 
 rowpins = []
 colpins = []
@@ -76,7 +76,7 @@ class LightSensor():
 
 
 field = Field(world)
-LIGHT_SENSOR_ADC_PIN = 0
+LIGHT_SENSOR_ADC_PIN = 2
 LIGHT_SENSOR_TH = 20000 # this value was obtained by experiment.
 lightSensor = LightSensor(LIGHT_SENSOR_ADC_PIN, LIGHT_SENSOR_TH)
 
